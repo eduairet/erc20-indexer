@@ -1,5 +1,16 @@
 import { useContext } from 'react';
-import { Heading, Image, Flex, Box, SimpleGrid } from '@chakra-ui/react';
+import {
+    Spinner,
+    Heading,
+    Image,
+    Table,
+    Thead,
+    Tbody,
+    Th,
+    Tr,
+    Td,
+    Stack,
+} from '@chakra-ui/react';
 import { Utils } from 'alchemy-sdk';
 import { EthereumContext } from '../store/ethereum-context';
 
@@ -9,51 +20,54 @@ export default function Balances() {
     return (
         <>
             <Heading my={36}>ERC-20 token balances:</Heading>
-            {ethCtx.hasQueried ? (
-                <SimpleGrid
-                    mt={50}
+            {ethCtx.isQuerying ? (
+                <Stack direction='row' height='10rem'>
+                    <Spinner color='lime' thickness='4px' speed='0.65s' />
+                </Stack>
+            ) : ethCtx.hasQueried &&
+              !ethCtx.isQuerying &&
+              ethCtx.results.tokenBalances.length &&
+              ethCtx.tokenDataObjects.length ? (
+                <Table
                     w='90vw'
                     maxW='800px'
-                    columns={4}
-                    spacing={24}
+                    overflowX='scroll'
+                    variant='striped'
                 >
-                    {ethCtx.results.tokenBalances.map((e, i) => {
-                        const { symbol, decimals, logo } =
-                            ethCtx.tokenDataObjects[i];
-                        console.log(symbol, decimals, logo);
-                        return (
-                            <Flex
-                                key={`${e.id}-${i}`}
-                                padding='2rem'
-                                textAlign='center'
-                                flexDir='column'
-                                border='2px solid lime'
-                                borderRadius='100%'
-                                w='20rem'
-                                h='20rem'
-                                alignItems='center'
-                                justifyContent='center'
-                                gap='0.5rem'
-                            >
-                                <Box>
-                                    <b>Symbol:</b> ${symbol}
-                                </Box>
-                                <Box>
-                                    <b>Balance:</b>&nbsp;
-                                    {Utils.formatUnits(
-                                        e.tokenBalance,
-                                        decimals
-                                    )}
-                                </Box>
-                                <Image
-                                    maxW='5rem'
-                                    marginTop='1rem'
-                                    src={logo}
-                                />
-                            </Flex>
-                        );
-                    })}
-                </SimpleGrid>
+                    <Thead>
+                        <Tr>
+                            <Th>Logo</Th>
+                            <Th>Symbol</Th>
+                            <Th>Balance</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {ethCtx.results.tokenBalances.map((e, i) => {
+                            if (ethCtx.tokenDataObjects[i]) {
+                                const { symbol, decimals, logo } =
+                                    ethCtx.tokenDataObjects[i];
+                                return (
+                                    <Tr key={`${e.id}-${i}`}>
+                                        <Td>
+                                            <Image maxW='1.5rem' src={logo} />
+                                        </Td>
+                                        <Td>{symbol}</Td>
+                                        <Td textAlign='right'>
+                                            {Number(
+                                                Utils.formatUnits(
+                                                    e.tokenBalance,
+                                                    decimals
+                                                )
+                                            ).toFixed(4)}
+                                        </Td>
+                                    </Tr>
+                                );
+                            } else {
+                                return null;
+                            }
+                        })}
+                    </Tbody>
+                </Table>
             ) : (
                 'Please make a query! This may take a few seconds...'
             )}

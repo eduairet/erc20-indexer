@@ -14,7 +14,7 @@ export default function ConnectWallet() {
                 ethCtx.setSigner(signer);
                 ethCtx.setUserAddress(signer);
             } catch (err) {
-                alert(err);
+                alert(err.message);
             }
             setIsLoading(false);
         };
@@ -22,7 +22,7 @@ export default function ConnectWallet() {
     useEffect(() => {
         if (window.ethereum) {
             setHasEth(true);
-            const signer = window.ethereum.selectedAddress;
+            const signer = window.ethereum.selectedAddress || '';
             ethCtx.setSigner(signer);
             ethCtx.setUserAddress(signer);
             window.ethereum.on('accountsChanged', () => {
@@ -36,7 +36,9 @@ export default function ConnectWallet() {
             <Flex direction={'column'}>
                 {ethCtx.signer ? (
                     <Button isDisabled={true} {...buttonStyle}>
-                        {ethCtx.signer}
+                        {`${ethCtx.signer.slice(0, 5)}...${ethCtx.signer.slice(
+                            -4
+                        )}`}
                     </Button>
                 ) : (
                     <Button

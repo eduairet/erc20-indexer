@@ -5,7 +5,7 @@ import IndexerHeader from './components/IndexerHeading';
 
 function App() {
     return (
-        <Box w='100vw'>
+        <Box w='100vw' paddingY='2rem'>
             <IndexerHeader />
             <Flex
                 w='100%'

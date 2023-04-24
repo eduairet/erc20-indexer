@@ -60,6 +60,31 @@ button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
+button:disabled {
+    opacity: 0.5;
+}
+
+table {
+    border: 2px solid lime;
+    border-radius: 0.5rem;
+}
+
+th,
+td {
+    border-bottom: 2px solid lime;
+    border-right: 2px solid lime;
+    padding: 0.25rem 1rem;
+    text-align: left;
+}
+
+tr:last-child > td {
+    border-bottom: none;
+}
+
+th:last-child,
+td:last-child {
+    border-right: none;
+}
 
 @media (prefers-color-scheme: light) {
     :root {
